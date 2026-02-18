@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.service.annotation.PutExchange;
 
 import java.io.IOException;
 import java.util.List;
@@ -48,10 +49,33 @@ public class ProductController {
                                         @RequestPart MultipartFile imageFile){
         Product savedProduct = null;
         try {
-            savedProduct = productService.addProduct(product, imageFile);
+            savedProduct = productService.addOrUpdateProduct(product, imageFile);
             return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
         } catch (IOException e) {
             return new ResponseEntity<>(savedProduct, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PutMapping("/product/{id}")
+    public ResponseEntity<String> updateProduct(@PathVariable int id, @RequestPart Product product, @RequestPart MultipartFile imageFile){
+        Product updatedProduct = null;
+        try{
+            updatedProduct = productService.addOrUpdateProduct(product,imageFile);
+                return  new ResponseEntity<>("Updated", HttpStatus.OK);
+
+        } catch (IOException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/product/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable int id){
+        Product product = productService.getProductById(id);
+
+        if(product != null) {
+            productService.deleteProduct(id);
+            return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
