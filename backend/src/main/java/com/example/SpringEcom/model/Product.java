@@ -34,5 +34,6 @@ public class Product {
     private byte[] imageData;
 
     public Product (int id){
+        this.id = id;
     }
 }

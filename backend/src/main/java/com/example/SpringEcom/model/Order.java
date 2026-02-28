@@ -20,8 +20,9 @@ public class Order {
     @Column(unique = true)
     private String orderId;
     private String customerName;
+    private String email;
     private String status;
     private LocalDate orderDate;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    List<OrderItem> orderItems;
+    private List<OrderItem> orderItems;
 }
